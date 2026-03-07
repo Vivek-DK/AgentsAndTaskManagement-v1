@@ -126,8 +126,8 @@ http://localhost:5173
 Default Super Admin Credentials
 
 ```
-Email: admin@test.com
-Password: admin123
+Email: superadmin@gmail.com
+Password: Admin@123
 ```
 Admin can:
 
