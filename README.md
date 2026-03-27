@@ -126,8 +126,8 @@ http://localhost:5173
 Default Super Admin Credentials
 
 ```
-Email: admin@test.com
-Password: admin123
+Email: superadmin@gmail.com
+Password: Admin@123
 ```
 Admin can:
 
@@ -218,6 +218,18 @@ POST /api/upload — Upload CSV/XLSX and distribute tasks
 https://drive.google.com/file/d/1Vj7SL-jjCAc_QgIKhqjdwApAeIZMCTAk/view?usp=sharing
 
 --- 
+## Landing Page
+![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement/blob/97f9ac137931c32b835640079d9e2de66f37c9ca/project_images/landing_page.png)
+
+---
+## Admin Dashboard
+![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement/blob/97f9ac137931c32b835640079d9e2de66f37c9ca/project_images/admin-dashboard.png)
+
+---
+## Agent Dashboard
+![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement/blob/97f9ac137931c32b835640079d9e2de66f37c9ca/project_images/Agent-dashboard.png)
+
+---
 
 ![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement/blob/97f9ac137931c32b835640079d9e2de66f37c9ca/project_images/landing_page.png)
 

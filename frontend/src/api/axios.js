@@ -2,7 +2,7 @@ import axios from "axios";
 
 // create axios instance with base API URL
 const instance = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://agentsandtaskmanagement.onrender.com/api",
 });
 
 // attach token automatically to every request
