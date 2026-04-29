@@ -1,8 +1,9 @@
 /* ================= CARD CONTAINER ================= */
 
 .add-admin-card {
-  width: 380px;
-  margin: auto;
+  margin: 40px auto;
+  max-width: 400px;
+  width: 100%;
   padding: 28px;
   background: white;
   border-radius: 14px;

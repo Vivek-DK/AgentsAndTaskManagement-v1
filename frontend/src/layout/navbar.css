@@ -115,6 +115,14 @@
   justify-content: center;
 }
 
+.layout-content {
+  width: 100%;
+}
+
+.layout-content {
+  width: 100%;
+  min-height: calc(100vh - 70px); /* adjust navbar height */
+}
 
 /* ================= ANIMATION ================= */
 
