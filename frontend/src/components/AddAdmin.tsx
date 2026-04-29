@@ -1,6 +1,5 @@
 import { useState, ChangeEvent } from "react";
 import { createAdmin } from "../api/adminApi";
-import "./addAdmin.css";
 
 type AdminForm = {
   email: string;
@@ -19,8 +18,6 @@ export default function AddAdmin() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
-
-  // ---------------- VALIDATION ----------------
 
   const isValidEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -63,8 +60,6 @@ export default function AddAdmin() {
     return true;
   };
 
-  // ---------------- HANDLERS ----------------
-
   const handleChange = (
     e: ChangeEvent<HTMLInputElement>,
     field: keyof AdminForm
@@ -72,7 +67,7 @@ export default function AddAdmin() {
     let value = e.target.value;
 
     if (field === "mobile") {
-      value = value.replace(/\D/g, "")
+      value = value.replace(/\D/g, "");
     }
 
     if (field === "email") {
@@ -85,14 +80,9 @@ export default function AddAdmin() {
     }));
   };
 
-  const resetForm = () => {
-    setForm(initialForm);
-  };
-
-  // ---------------- SUBMIT ----------------
+  const resetForm = () => setForm(initialForm);
 
   const submit = async () => {
-    console.log(form);
     setError("");
     setSuccess("");
 
@@ -102,11 +92,8 @@ export default function AddAdmin() {
 
     try {
       await createAdmin(form);
-
       setSuccess("Admin created successfully");
       resetForm();
-
-      // auto clear success
       setTimeout(() => setSuccess(""), 3000);
     } catch (err: any) {
       setError(typeof err === "string" ? err : "Failed to create admin");
@@ -115,50 +102,98 @@ export default function AddAdmin() {
     }
   };
 
-  // ---------------- UI ----------------
-
   return (
-    <div className="add-admin-card">
-      <h3>Create Admin</h3>
+    <div className="max-w-md mx-auto mt-10 p-8 rounded-2xl 
+      bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl 
+      animate-[fadeUp_0.4s_ease]">
 
-      {error && <div className="error-msg">{error}</div>}
-      {success && <div className="success-msg">{success}</div>}
+      <h3 className="text-xl font-semibold text-center mb-6">
+        Create Admin
+      </h3>
 
-      {/* EMAIL */}
-      <div className="input-group">
-        <input
-          value={form.email}
-          onChange={(e) => handleChange(e, "email")}
-          required
-        />
-        <label>Email</label>
+      {/* FEEDBACK */}
+      {error && (
+        <div className="mb-4 p-3 rounded-lg bg-red-500/10 text-red-300 text-sm animate-pulse">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="mb-4 p-3 rounded-lg bg-green-500/10 text-green-300 text-sm">
+          {success}
+        </div>
+      )}
+
+      {/* FORM */}
+      <div className="space-y-5">
+
+        {/* EMAIL */}
+        <div className="relative group">
+          <input
+            value={form.email}
+            onChange={(e) => handleChange(e, "email")}
+            className="peer w-full h-12 px-4 rounded-lg bg-white/5 
+            border border-white/10 outline-none text-sm 
+            focus:ring-2 focus:ring-indigo-500 transition"
+            placeholder=" "
+          />
+          <label
+            className="absolute left-3 top-3 text-gray-400 text-sm 
+            transition-all peer-focus:-top-2 peer-focus:text-xs 
+            peer-focus:text-indigo-400 peer-placeholder-shown:top-3 
+            peer-placeholder-shown:text-sm bg-dark px-1"
+          >
+            Email
+          </label>
+        </div>
+
+        {/* MOBILE */}
+        <div className="relative group">
+          <input
+            value={form.mobile}
+            maxLength={10}
+            onChange={(e) => handleChange(e, "mobile")}
+            className="peer w-full h-12 px-4 rounded-lg bg-white/5 
+            border border-white/10 outline-none text-sm 
+            focus:ring-2 focus:ring-indigo-500 transition"
+            placeholder=" "
+          />
+          <label
+            className="absolute left-3 top-3 text-gray-400 text-sm 
+            transition-all peer-focus:-top-2 peer-focus:text-xs 
+            peer-focus:text-indigo-400 peer-placeholder-shown:top-3 
+            peer-placeholder-shown:text-sm bg-dark px-1"
+          >
+            Mobile Number
+          </label>
+        </div>
+
+        {/* PASSWORD */}
+        <div className="relative group">
+          <input
+            type="password"
+            autoComplete="new-password"
+            value={form.password}
+            onChange={(e) => handleChange(e, "password")}
+            className="peer w-full h-12 px-4 rounded-lg bg-white/5 
+            border border-white/10 outline-none text-sm 
+            focus:ring-2 focus:ring-indigo-500 transition"
+            placeholder=" "
+          />
+          <label
+            className="absolute left-3 top-3 text-gray-400 text-sm 
+            transition-all peer-focus:-top-2 peer-focus:text-xs 
+            peer-focus:text-indigo-400 peer-placeholder-shown:top-3 
+            peer-placeholder-shown:text-sm bg-dark px-1"
+          >
+            Password
+          </label>
+        </div>
+
       </div>
 
-      {/* MOBILE */}
-      <div className="input-group">
-        <input
-          value={form.mobile}
-          maxLength={10}
-          onChange={(e) => handleChange(e, "mobile")}
-          required
-        />
-        <label>Mobile Number</label>
-      </div>
-
-      {/* PASSWORD */}
-      <div className="input-group">
-        <input
-          type="password"
-          autoComplete="new-password"
-          value={form.password}
-          onChange={(e) => handleChange(e, "password")}
-          required
-        />
-        <label>Password</label>
-      </div>
-
+      {/* BUTTON */}
       <button
-        className="add-admin-btn"
         onClick={submit}
         disabled={
           loading ||
@@ -166,8 +201,19 @@ export default function AddAdmin() {
           !form.password ||
           !form.mobile
         }
+        className={`mt-6 w-full h-12 rounded-xl font-semibold 
+        transition-all duration-300
+        ${
+          loading || !form.email || !form.password || !form.mobile
+            ? "bg-indigo-500/50 cursor-not-allowed"
+            : "bg-gradient-to-r from-indigo-500 to-purple-500 hover:scale-[1.02] shadow-lg"
+        }`}
       >
-        {loading ? <span className="loader"></span> : "Create Admin"}
+        {loading ? (
+          <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full inline-block animate-spin"></span>
+        ) : (
+          "Create Admin"
+        )}
       </button>
     </div>
   );

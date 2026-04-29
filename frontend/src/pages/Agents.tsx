@@ -1,57 +1,33 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import {
-  getAgents,
   getTasksByAgentId,
   deactivateAgent as deactivateAgentApi,
 } from "../api/agentApi";
-import { useAuth } from "../context/AuthContext";
+
 import { FaChevronRight } from "react-icons/fa";
 import { Agent } from "../types/agent";
 import { Task } from "../types/task";
-import "./agents.css";
 
-export default function Agents() {
-  const [agents, setAgents] = useState<Agent[]>([]);
+type Props = {
+  agents: Agent[];
+  setAgents: React.Dispatch<React.SetStateAction<Agent[]>>;
+  onRefresh: () => void;
+  refreshing: boolean;
+};
+
+export default function Agents({
+  agents,
+  setAgents,
+  onRefresh,
+  refreshing,
+}: Props) {
+
   const [expandedAgent, setExpandedAgent] = useState<string | null>(null);
-
   const [agentTasks, setAgentTasks] = useState<Record<string, Task[]>>({});
   const [taskLoading, setTaskLoading] = useState<Record<string, boolean>>({});
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
-  const { role } = useAuth();
-
-  // ---------------- FETCH AGENTS ----------------
-
-  const fetchAgents = async () => {
-    try {
-      setLoading(true);
-      const data = await getAgents();
-
-      const sorted = [...data].sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() -
-          new Date(a.createdAt).getTime()
-      );
-
-      setAgents(sorted);
-    } catch (err: any) {
-      setError(err || "Failed to load agents");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAgents();
-  }, []);
-
-  // ---------------- TOGGLE AGENT ----------------
-
+  // EXPAND
   const toggleAgent = async (id: string) => {
     if (expandedAgent === id) {
       setExpandedAgent(null);
@@ -61,161 +37,167 @@ export default function Agents() {
     setExpandedAgent(id);
 
     if (!agentTasks[id]) {
-      try {
-        setTaskLoading((prev) => ({ ...prev, [id]: true }));
+      setTaskLoading((p) => ({ ...p, [id]: true }));
 
-        const tasks = await getTasksByAgentId(id);
+      const tasks = await getTasksByAgentId(id);
 
-        setAgentTasks((prev) => ({
-          ...prev,
-          [id]: tasks,
-        }));
-      } catch {
-        setError("Failed to load tasks");
-      } finally {
-        setTaskLoading((prev) => ({ ...prev, [id]: false }));
-      }
+      setAgentTasks((p) => ({ ...p, [id]: tasks }));
+      setTaskLoading((p) => ({ ...p, [id]: false }));
     }
   };
 
-  // ---------------- DEACTIVATE ----------------
-
+  // DELETE
   const deactivateAgent = async () => {
     if (!confirmDelete) return;
 
-    try {
-      await deactivateAgentApi(confirmDelete);
-      setSuccess("Agent deactivated successfully");
-      await fetchAgents();
-      setConfirmDelete(null);
+    await deactivateAgentApi(confirmDelete);
 
-      setTimeout(() => setSuccess(""), 2000);
-    } catch (err: any) {
-      setError(err || "Deactivation failed");
-    }
+    setAgents((prev) =>
+      prev.filter((a) => a._id !== confirmDelete)
+    );
+
+    setConfirmDelete(null);
   };
 
-  // ---------------- UI ----------------
+  // ESC close
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setConfirmDelete(null);
+    };
+
+    if (confirmDelete) {
+      window.addEventListener("keydown", handleEsc);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [confirmDelete]);
 
   return (
-    <div className="agentscontainer">
-      <h2 className="agents-title">Agents</h2>
+    <div className="w-full">
 
-      {/* FEEDBACK */}
-      {error && <div className="error-msg">{error}</div>}
-      {success && <div className="success-msg">{success}</div>}
+      {/* TOP BAR */}
+      <div className="flex justify-between mb-4 items-center">
+        <h2 className="text-xl font-semibold">Agents</h2>
 
-      {loading ? (
-        <div className="loading">Loading agents...</div>
-      ) : agents.length === 0 ? (
-        <div className="empty-state">No agents added yet</div>
+        <button
+          onClick={onRefresh}
+          className="px-3 py-2 bg-white/10 rounded-lg flex items-center gap-2 active:scale-95 transition"
+        >
+          <span
+            className={`inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full ${
+              refreshing ? "animate-spin" : ""
+            }`}
+          />
+          {refreshing ? "Refreshing..." : "Refresh"}
+        </button>
+      </div>
+
+      {/* LIST */}
+      {agents.length === 0 ? (
+        <p className="text-gray-400">No agents</p>
       ) : (
-        <>
-          {/* HEADER */}
-          <div className="agent-header">
-            <span>Name</span>
-            <span>Email</span>
-            <span>Phone</span>
-            <span></span>
-          </div>
+        <div className="space-y-3">
+          {agents.map((agent) => {
+            const isOpen = expandedAgent === agent._id;
 
-          {/* LIST */}
-          <div className="agents-scroll">
-            {agents.map((agent) => (
-              <div key={agent._id} className="agent-row-wrapper">
-                <div className="agent-row">
-                  <span className="agent-name">{agent.name}</span>
-                  <span>{agent.email}</span>
-                  <span>{agent.mobile}</span>
-
-                  {/* expand */}
-                  <button
-                    className={`expand-btn ${
-                      expandedAgent === agent._id ? "open" : ""
-                    }`}
-                    onClick={() => toggleAgent(agent._id)}
-                  >
-                    <FaChevronRight />
-                  </button>
-
-                  {/* admin only */}
-                  {role === "admin" && (
+            return (
+              <div
+                key={agent._id}
+                className="rounded-xl bg-white/5 border border-white/10 overflow-hidden"
+              >
+                {/* ROW */}
+                <div
+                  className="flex items-center justify-between px-5 py-4 hover:bg-white/5 transition cursor-pointer"
+                  onClick={() => toggleAgent(agent._id)}
+                >
+                  <div className="flex items-center gap-4">
                     <button
-                      className="delete-agent-btn"
-                      onClick={() => setConfirmDelete(agent._id)}
+                      className={`transition-transform ${
+                        isOpen ? "rotate-90" : ""
+                      }`}
                     >
-                      Deactivate
+                      <FaChevronRight />
                     </button>
-                  )}
+
+                    <div>
+                      <p className="font-medium">{agent.name}</p>
+                      <p className="text-sm text-gray-400">
+                        {agent.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setConfirmDelete(agent._id);
+                    }}
+                    className="px-3 py-1 text-xs rounded-md bg-red-500/10 text-red-400 hover:bg-red-500/20"
+                  >
+                    Deactivate
+                  </button>
                 </div>
 
-                {/* TASKS */}
-                <div
-                  className={`agent-expand ${
-                    expandedAgent === agent._id ? "show" : ""
-                  }`}
-                >
-                  <div className="task-panel">
-                    <p>
-                      <strong>Assigned Tasks:</strong>
-                    </p>
+                {/* EXPAND */}
+                {isOpen && (
+                  <div className="px-6 pb-5 pt-2 border-t border-white/10 bg-white/5">
 
                     {taskLoading[agent._id] ? (
-                      <p>Loading tasks...</p>
+                      <p className="text-gray-400">Loading tasks...</p>
                     ) : agentTasks[agent._id]?.length > 0 ? (
-                      <>
-                        <div className="task-scroll">
-                          {agentTasks[agent._id].map((task) => (
-                            <div
-                              key={task._id}
-                              className="agent-task-item"
-                            >
-                              <strong>{task.FirstName}</strong>
-                              <span> • {task.Phone}</span>
-                              <p>{task.Notes || "-"}</p>
-                            </div>
-                          ))}
-                        </div>
+                      <div className="space-y-2 max-h-40 overflow-y-auto">
 
-                        <p className="task-count">
-                          Total: {agentTasks[agent._id].length}
-                        </p>
-                      </>
+                        {agentTasks[agent._id].map((task) => (
+                          <div
+                            key={task._id}
+                            className="p-3 rounded-lg bg-white/5 border border-white/10"
+                          >
+                            <div className="flex justify-between text-sm">
+                              <strong>{task.FirstName}</strong>
+                              <span className="text-gray-400">
+                                {task.Phone}
+                              </span>
+                            </div>
+                            <p className="text-xs text-gray-400 mt-1">
+                              {task.Notes || "-"}
+                            </p>
+                          </div>
+                        ))}
+
+                      </div>
                     ) : (
-                      <p>No tasks assigned</p>
+                      <p className="text-gray-400">No tasks assigned</p>
                     )}
+
                   </div>
-                </div>
+                )}
               </div>
-            ))}
-          </div>
-        </>
+            );
+          })}
+        </div>
       )}
 
-      {/* SINGLE GLOBAL MODAL */}
+      {/* ✅ SINGLE MODAL (OUTSIDE MAP) */}
       {confirmDelete && (
-        <div
-          className="logout-overlay"
-          onClick={() => setConfirmDelete(null)}
-        >
-          <div
-            className="logout-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3>Deactivate Agent</h3>
-            <p>Are you sure?</p>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center z-50">
+          <div className="bg-white/10 p-6 rounded-xl text-center border border-white/10 shadow-xl">
+            <p className="mb-4 text-sm text-gray-300">
+              Are you sure you want to deactivate this agent?
+            </p>
 
-            <div className="logout-actions">
+            <div className="flex gap-3 justify-center">
               <button
-                className="cancel-btn"
                 onClick={() => setConfirmDelete(null)}
+                className="px-4 py-2 bg-white/10 rounded hover:bg-white/20 transition"
               >
                 Cancel
               </button>
 
               <button
-                className="confirm-btn"
                 onClick={deactivateAgent}
+                className="px-4 py-2 bg-red-500 rounded hover:bg-red-600 transition"
               >
                 Deactivate
               </button>
@@ -223,6 +205,7 @@ export default function Agents() {
           </div>
         </div>
       )}
+
     </div>
   );
 }

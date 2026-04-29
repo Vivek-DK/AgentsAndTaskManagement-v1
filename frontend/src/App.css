@@ -1,14 +1,22 @@
-body{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
 }
 
-body::-webkit-scrollbar {
-  display: none;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-body {
-  -ms-overflow-style: none; 
-  scrollbar-width: none;  
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.3);
 }

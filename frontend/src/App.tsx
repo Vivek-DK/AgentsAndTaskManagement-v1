@@ -3,9 +3,8 @@ import Layout from "./layout/Layout";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
-import Agents from "./pages/Agents";
-import Tasks from "./pages/Tasks";
 import AgentDashboard from "./pages/AgentDashboard";
+import PageNotFound from "./pages/PageNotFound";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import "./App.css";
 
@@ -14,7 +13,7 @@ export default function App() {
     <Router>
       <Routes>
 
-        {/* 🔥 ALL ROUTES INSIDE LAYOUT */}
+        {/* ALL ROUTES INSIDE LAYOUT */}
         <Route element={<Layout />}>
 
           {/* PUBLIC */}
@@ -31,22 +30,6 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/admin/agents"
-            element={
-              <ProtectedRoute role="admin">
-                <Agents />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/tasks"
-            element={
-              <ProtectedRoute role="admin">
-                <Tasks />
-              </ProtectedRoute>
-            }
-          />
 
           {/* AGENT */}
           <Route
@@ -58,8 +41,12 @@ export default function App() {
             }
           />
 
-          {/* 404 */}
-          <Route path="*" element={<div>Page Not Found</div>} />
+          <Route
+          path="*"
+          element={
+            < PageNotFound />
+          }
+        />
 
         </Route>
 

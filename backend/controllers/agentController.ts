@@ -83,14 +83,7 @@ export const getMyProfile = asyncHandler(
       throw new AppError("Agent not found", 404);
     }
 
-    res.status(201).json({
-      message: "Agent created successfully",
-      agent: {
-        id: agent._id,
-        name: agent.name,
-        email: agent.email,
-      },
-    });
+    res.status(200).json(agent);
   }
 );
 

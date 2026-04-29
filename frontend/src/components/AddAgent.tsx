@@ -1,8 +1,6 @@
 import { useState, ChangeEvent } from "react";
 import { createAgent } from "../api/agentApi";
-import "./addAgent.css";
 
-// ✅ form type
 type AgentForm = {
   name: string;
   email: string;
@@ -11,7 +9,6 @@ type AgentForm = {
 };
 
 export default function AddAgent() {
-  // typed form state
   const [form, setForm] = useState<AgentForm>({
     name: "",
     email: "",
@@ -19,26 +16,21 @@ export default function AddAgent() {
     password: "",
   });
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [success, setSuccess] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
-  // validation functions
-  const isValidEmail = (email: string): boolean => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
+  const isValidEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const isValidMobile = (mobile: string): boolean => {
-    return /^[0-9]{10}$/.test(mobile);
-  };
+  const isValidMobile = (mobile: string) =>
+    /^[0-9]{10}$/.test(mobile);
 
-  const isValidPassword = (password: string): boolean => {
-    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#()[\]{}\-_=+|\\:;"'<>,./]).{8,}$/.test(
+  const isValidPassword = (password: string) =>
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#()[\]{}\-_=+|\\:;"'<>,./]).{8,}$/.test(
       password
     );
-  };
 
-  // generic input handler (🔥 cleaner)
   const handleChange = (
     e: ChangeEvent<HTMLInputElement>,
     field: keyof AgentForm
@@ -74,20 +66,17 @@ export default function AddAgent() {
     }
 
     if (!isValidMobile(form.mobile)) {
-      setError("Mobile number must be exactly 10 digits");
+      setError("Mobile must be 10 digits");
       return;
     }
 
     if (!isValidPassword(form.password)) {
-      setError(
-        "Password must contain uppercase, lowercase, number and special character (min 8 characters)"
-      );
+      setError("Weak password");
       return;
     }
 
     try {
       setLoading(true);
-
       await createAgent(form);
 
       setForm({
@@ -99,70 +88,145 @@ export default function AddAgent() {
 
       setSuccess("Agent added successfully");
     } catch (err: any) {
-        setError(typeof err === "string" ? err : "Something went wrong"); 
+      setError(typeof err === "string" ? err : "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="add-agent-card">
-      <h3>Add Agent</h3>
+    <div className="max-w-lg mx-auto mt-10 p-8 rounded-2xl 
+      bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl 
+      animate-[fadeUp_0.4s_ease]">
 
-      {error && <div className="error-msg">{error}</div>}
-      {success && <div className="success-msg">{success}</div>}
+      <h3 className="text-xl font-semibold mb-6">
+        Add Agent
+      </h3>
 
-      {/* NAME */}
-      <div className="input-group">
-        <input
-          value={form.name}
-          onChange={(e) => handleChange(e, "name")}
-          required
-        />
-        <label>Name</label>
+      {/* FEEDBACK */}
+      {error && (
+        <div className="mb-4 p-3 rounded-lg bg-red-500/10 text-red-300 text-sm">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="mb-4 p-3 rounded-lg bg-green-500/10 text-green-300 text-sm">
+          {success}
+        </div>
+      )}
+
+      {/* SECTION 1 */}
+      <div className="mb-6">
+        <p className="text-xs text-gray-400 mb-3 uppercase tracking-wide">
+          Basic Info
+        </p>
+
+        <div className="space-y-4">
+
+          {/* NAME */}
+          <div className="relative">
+            <input
+              value={form.name}
+              onChange={(e) => handleChange(e, "name")}
+              placeholder=" "
+              className="peer w-full h-12 px-4 rounded-lg bg-white/5 
+              border border-white/10 text-sm outline-none 
+              focus:ring-2 focus:ring-indigo-500 transition"
+            />
+            <label className="absolute left-3 top-3 text-gray-400 text-sm 
+              transition-all peer-focus:-top-2 peer-focus:text-xs 
+              peer-focus:text-indigo-400 peer-placeholder-shown:top-3 
+              peer-placeholder-shown:text-sm bg-dark px-1">
+              Name
+            </label>
+          </div>
+
+          {/* EMAIL */}
+          <div className="relative">
+            <input
+              value={form.email}
+              onChange={(e) => handleChange(e, "email")}
+              placeholder=" "
+              className="peer w-full h-12 px-4 rounded-lg bg-white/5 
+              border border-white/10 text-sm outline-none 
+              focus:ring-2 focus:ring-indigo-500 transition"
+            />
+            <label className="absolute left-3 top-3 text-gray-400 text-sm 
+              transition-all peer-focus:-top-2 peer-focus:text-xs 
+              peer-focus:text-indigo-400 peer-placeholder-shown:top-3 
+              peer-placeholder-shown:text-sm bg-dark px-1">
+              Email
+            </label>
+          </div>
+
+          {/* MOBILE */}
+          <div className="relative">
+            <input
+              value={form.mobile}
+              onChange={(e) => handleChange(e, "mobile")}
+              maxLength={10}
+              placeholder=" "
+              className="peer w-full h-12 px-4 rounded-lg bg-white/5 
+              border border-white/10 text-sm outline-none 
+              focus:ring-2 focus:ring-indigo-500 transition"
+            />
+            <label className="absolute left-3 top-3 text-gray-400 text-sm 
+              transition-all peer-focus:-top-2 peer-focus:text-xs 
+              peer-focus:text-indigo-400 peer-placeholder-shown:top-3 
+              peer-placeholder-shown:text-sm bg-dark px-1">
+              Mobile
+            </label>
+          </div>
+
+        </div>
       </div>
 
-      {/* EMAIL */}
-      <div className="input-group">
-        <input
-          value={form.email}
-          onChange={(e) => handleChange(e, "email")}
-          required
-        />
-        <label>Email</label>
+      {/* SECTION 2 */}
+      <div className="mb-4">
+        <p className="text-xs text-gray-400 mb-3 uppercase tracking-wide">
+          Security
+        </p>
+
+        <div className="relative">
+          <input
+            type="password"
+            value={form.password}
+            onChange={(e) => handleChange(e, "password")}
+            placeholder=" "
+            className="peer w-full h-12 px-4 rounded-lg bg-white/5 
+            border border-white/10 text-sm outline-none 
+            focus:ring-2 focus:ring-indigo-500 transition"
+          />
+          <label className="absolute left-3 top-3 text-gray-400 text-sm 
+            transition-all peer-focus:-top-2 peer-focus:text-xs 
+            peer-focus:text-indigo-400 peer-placeholder-shown:top-3 
+            peer-placeholder-shown:text-sm bg-dark px-1">
+            Password
+          </label>
+        </div>
+
+        <p className="text-xs text-gray-500 mt-2">
+          Must include uppercase, lowercase, number & symbol
+        </p>
       </div>
 
-      {/* MOBILE */}
-      <div className="input-group">
-        <input
-          value={form.mobile}
-          onChange={(e) => handleChange(e, "mobile")}
-          required
-        />
-        <label>Mobile</label>
-      </div>
-
-      {/* PASSWORD */}
-      <div className="input-group">
-        <input
-          type="password"
-          value={form.password}
-          onChange={(e) => handleChange(e, "password")}
-          required
-        />
-        <label>Password</label>
-      </div>
-
-      <small className="password-hint">
-        Must include uppercase, lowercase, number & symbol
-      </small>
-
+      {/* ACTION */}
       <button
-        className="add-agent-btn"
         onClick={submit}
         disabled={loading}
+        className={`w-full h-12 rounded-xl font-semibold mt-4 transition-all
+        ${
+          loading
+            ? "bg-indigo-500/50 cursor-not-allowed"
+            : "bg-gradient-to-r from-indigo-500 to-purple-500 hover:scale-[1.02] shadow-lg"
+        }`}
       >
-        {loading ? <span className="loader"></span> : "Add Agent"}
+        {loading ? (
+          <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full inline-block animate-spin"></span>
+        ) : (
+          "Add Agent"
+        )}
       </button>
     </div>
   );
