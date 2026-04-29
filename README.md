@@ -1,266 +1,271 @@
-# 🚀 Agents & Tasks Manager
+# 🚀 Agents & Task Management System
 
-A full-stack web application designed to manage agents and distribute tasks efficiently using automated assignment logic. The system enables administrators to manage agents, upload task files, and monitor workflow, while agents can securely access only their assigned tasks through a role-based dashboard.
-
----
-
-## 📌 Project Overview
-
-Agents & Tasks Manager is built using the MERN stack and focuses on solving task allocation and monitoring problems in team-based environments. The application allows administrators to upload tasks in bulk through CSV or Excel files and automatically distributes them among active agents using a balanced distribution algorithm.  
-
-The system ensures secure authentication, clean separation between admin and agent roles, and controlled access to data through protected APIs.
+A scalable full-stack web application for managing agents and distributing tasks efficiently using automated logic. Built with **MERN + TypeScript + Tailwind CSS**, featuring role-based access, bulk task processing, and a modern dashboard UI.
 
 ---
 
-## ✨ Features
+## 🌐 Live Demo
 
-### 👨‍💼 Admin Features
-- Admin login with role-based authentication
-- Create and manage agents
-- Activate or deactivate agents
-- Create and manage additional admins (Super Admin protected)
-- Upload CSV/XLSX files containing tasks
-- Automatic equal task distribution
-- Automatic task reassignment when an agent is deactivated
-- View all agents and assigned tasks
-- Delete individual tasks or all tasks
-- Secure admin-only operations
-
-### 👨‍💻 Agent Features
-- Secure agent login
-- Personal dashboard access
-- View only assigned tasks
-- View personal profile details
-- Protected API access
+Frontend: https://agents-and-task-management-v1.vercel.app  
+Backend: https://agentsandtaskmanagement-v1.onrender.com  
 
 ---
 
-## 🧩 Tech Stack
+## 📌 Overview
 
-### 🖥 Frontend
-- React.js
-- CSS3 (Custom UI Styling)
-- Axios
-- React Router
+This system solves real-world task allocation problems in team environments.
 
-### ⚙️ Backend
-- Node.js
-- Express.js
-- JWT Authentication
-- bcrypt.js
+Admins can:
+- Manage agents
+- Upload tasks in bulk (CSV/XLSX)
+- Automatically distribute tasks
+- Monitor workflows
 
-### 🗄 Database
-- MongoDB
-- Mongoose ODM
+Agents can:
+- Access only assigned tasks
+- View personal dashboard
 
 ---
 
-## 📁 Project Structure
+## ✨ Core Features
 
-```
-AgentsAndTask-Manager/
-│
-├── backend/
-│ ├── controllers/
-│ ├── middleware/
-│ ├── models/
-│ ├── routes/
-│ ├── services/
-│ ├── utils/
-│ └── server.js
-│
-├── frontend/
-│ ├── components/
-│ ├── pages/
-│ ├── layout/
-│ ├── api/
-│ └── App.jsx
-│
-└── README.md
-```
+### 🔐 Authentication & Authorization
+- JWT-based authentication
+- Role-based access (Admin / Agent)
+- Protected API routes
 
 ---
 
-## How To Run The Application
-
-### 1️⃣ Clone Repository
-```bash
-git clone https://github.com/Vivek-DK/AgentsAndTaskManagement.git
-cd AgentsAndTaskManagement-master
-```
-## ⚙️ Environment Variables
-
-Create a `.env` file inside the backend folder.
-
-```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-```
-
-### 2️⃣ Backend Setup
-```bash
-cd backend
-npm install
-npm run dev
-```
-
-Server runs on:
-http://localhost:5000
-
-
-### 3️⃣ Frontend Setup
-```bash
-cd frontend/src
-npm install
-npm run dev
-```
-
-Frontend runs on:
-http://localhost:5173
+### 👨‍💼 Admin Capabilities
+- Create / deactivate agents
+- Create / delete admins
+- Upload tasks via CSV / XLSX
+- Automatic task distribution
+- Delete individual / all tasks
+- Monitor agents & tasks
 
 ---
 
-## 🔐 How To Login
+### 👨‍💻 Agent Capabilities
+- Secure login
+- Personal dashboard
+- View assigned tasks only
+- Profile management
 
-Default Super Admin Credentials
+---
 
-```
-Email: superadmin@gmail.com
-Password: Admin@123
-```
-Admin can:
-
-Create agents
-
-Upload tasks
-
-Manage admins
-
-Monitor task distribution
-
-Agents can login using credentials created by admin and can access only their own dashboard.
+### 📂 Task Management
+- Bulk upload support (CSV, XLSX)
+- File validation (headers + schema)
+- Balanced distribution algorithm
+- Automatic reassignment
 
 ---
 
 ## 🧠 Task Distribution Logic
 
-Tasks are distributed using a **balanced round-robin algorithm**:
+Balanced **round-robin algorithm**:
 
 - Tasks divided equally among active agents
-- Remaining tasks assigned sequentially
-- When an agent is deactivated:
-  - Remaining tasks automatically redistributed
-  - Task history preserved
+- Extra tasks distributed sequentially
+- Rebalancing happens when agents deactivate
 
 Example:
+25 Tasks + 5 Agents → Each gets 5 tasks
 
-25 Tasks + 5 Agents
-→ Each agent gets 5 tasks
 
 ---
 
-## 🔐 Authentication & Security
+## 🛠 Tech Stack
 
-- JWT-based authentication
-- Role-based authorization
-- Protected API routes
-- Admin-only operations secured
-- Agents cannot access other agents’ data
-- Super Admin deletion restricted
+### Frontend
+- React (Vite)
+- TypeScript
+- Tailwind CSS
+- Axios
+- React Router
+
+### Backend
+- Node.js
+- Express.js
+- TypeScript
+- JWT Authentication
+- Multer (file upload)
+- Joi (validation)
+
+### Database
+- MongoDB
+- Mongoose
+
+---
+
+## 🏗 Project Structure
+```
+project-root/
+│
+├── backend/
+│ ├── controllers/
+│ ├── services/
+│ ├── models/
+│ ├── routes/
+│ ├── validators/
+│ └── utils/
+│
+├── frontend/
+│ ├── components/
+│ ├── pages/
+│ ├── api/
+│ ├── context/
+│ └── layout/
+│
+└── README.md
+```
+
+
+---
+
+## ⚙️ Environment Variables
+
+### Backend `.env`
+```
+NODE_ENV=production
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+ADMIN_EMAIL=superadmin@gmail.com
+ADMIN_PASSWORD=Admin@123
+```
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/Vivek-DK/AgentsAndTaskManagement-v1.git
+cd AgentsAndTaskManagement-v1
+```
+
+### 2. Backend Setup
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+Build for production:
+
+```
+npm run build
+npm start
+```
+
+### 3. Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ---
 
 ## 📦 File Upload Format
 
-* CSV / XLSX must contain headers:
+Supported formats:
+- `.csv`
+- `.xlsx`
 
-* FirstName, Phone, Notes
-
-Example:
-
-John,9876543210,Follow up with customer
-Mary,9876543211,Schedule product demo
-
---- 
-
-## 🔌 API Overview (Short)
-**Authentication**
-
-POST /api/auth/login — Admin or Agent login
-
-**Agents**
-
-GET /api/agents — Get all active agents
-
-POST /api/agents — Create agent (Admin only)
-
-DELETE /api/agents/:id — Deactivate agent (Admin only)
-
-**Tasks**
-
-GET /api/tasks/my-tasks — Agent tasks
-
-GET /api/upload/tasks — All tasks (Admin)
-
-DELETE /api/tasks/:id — Delete single task
-
-DELETE /api/tasks — Delete all tasks
-
-**Upload**
-
-POST /api/upload — Upload CSV/XLSX and distribute tasks
-
---- 
-
-## 🎥 Demo Video
-📺 Google Drive Link:
-https://drive.google.com/file/d/1Vj7SL-jjCAc_QgIKhqjdwApAeIZMCTAk/view?usp=sharing
-
---- 
-## Landing Page
-![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement/blob/97f9ac137931c32b835640079d9e2de66f37c9ca/project_images/landing_page.png)
-
----
-## Admin Dashboard
-![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement/blob/97f9ac137931c32b835640079d9e2de66f37c9ca/project_images/admin-dashboard.png)
-
----
-## Agent Dashboard
-![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement/blob/97f9ac137931c32b835640079d9e2de66f37c9ca/project_images/Agent-dashboard.png)
+Required headers:
+FirstName, Phone, Notes
 
 ---
 
-![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement/blob/97f9ac137931c32b835640079d9e2de66f37c9ca/project_images/landing_page.png)
+## 🔌 API Overview
 
-![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement/blob/97f9ac137931c32b835640079d9e2de66f37c9ca/project_images/admin-dashboard.png)
+### Auth
 
-![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement/blob/97f9ac137931c32b835640079d9e2de66f37c9ca/project_images/Agent-dashboard.png)
+POST /api/auth/login
 
-## 📌 Future Improvements
+### Agents
+
+GET /api/agents
+POST /api/agents
+DELETE /api/agents/:id
+
+### Tasks
+
+GET /api/tasks/my-tasks
+GET /api/upload/tasks
+DELETE /api/tasks/:id
+DELETE /api/tasks
+
+### Upload
+
+POST /api/upload
+
+---
+
+## 🔐 Security
+
+- JWT Authentication  
+- Role-Based Access Control  
+- Rate Limiting  
+- Input Validation (Joi)  
+- MongoDB Sanitization  
+
+---
+
+## 🎯 UI/UX Highlights
+
+- Glassmorphism UI  
+- Fully Responsive Design  
+- Smooth Animations  
+- Loading States & Feedback  
+- Real-time UI Updates  
+
+---
+
+## 📸 Screenshots
+
+### Landing Page
+![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement-v1/blob/95e0df4b0e26cc387d45b054645e9b8c97cb3969/project_images/landing_page.png)
+
+---
+### Admin Dashboard
+![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement-v1/blob/95e0df4b0e26cc387d45b054645e9b8c97cb3969/project_images/Agent-dashboard.png)
+
+---
+### Agent Dashboard
+![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement-v1/blob/95e0df4b0e26cc387d45b054645e9b8c97cb3969/project_images/Agent-dashboard.png)
 
 
-Notifications system
+---
 
+## 📈 Future Improvements
 
-Task status tracking
+- Task Status Tracking  
+- Notification System  
+- Analytics Dashboard  
+- Pagination & Performance Optimization  
+- Agent Performance Metrics  
 
-
-Analytics dashboard
-
-
-Agent performance metrics
-
-
-Pagination for large datasets
-
---- 
+---
 
 ## 👨‍💻 Author
-* **Vivek DK** 
-Full Stack Developer
-React • Node.js • MongoDB
 
-⭐ If you found this project useful, consider giving it a star.
+**Vivek DK**  
+Full Stack Developer  
+
+Tech Stack:  
+React • Node.js • MongoDB • TypeScript  
 
 ---
+
+## ⭐ Support
+
+If you found this project useful:
+
+- ⭐ Star the repository  
+- 🍴 Fork the repository  
