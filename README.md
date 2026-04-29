@@ -236,7 +236,7 @@ POST /api/upload
 
 ---
 ### Admin Dashboard
-![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement-v1/blob/95e0df4b0e26cc387d45b054645e9b8c97cb3969/project_images/Agent-dashboard.png)
+![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement-v1/blob/95e0df4b0e26cc387d45b054645e9b8c97cb3969/project_images/Admin-dashboard.png)
 
 ---
 ### Agent Dashboard
