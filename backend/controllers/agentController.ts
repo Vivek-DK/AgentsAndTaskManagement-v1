@@ -58,13 +58,13 @@ export const getAgents = asyncHandler(async (_req: Request, res: Response) => {
 });
 
 // get all tasks (admin)
-export const getTasks = asyncHandler(async (_req: Request, res: Response) => {
-  const tasks = await Task.find()
-    .populate("agent", "name email")
-    .sort({ createdAt: -1 });
+  export const getTasks = asyncHandler(async (_req: Request, res: Response) => {
+    const tasks = await Task.find()
+      .populate("agent", "name email")
+      .sort({ createdAt: -1 });
 
-  res.json(tasks);
-});
+    res.json(tasks);
+  });
 
 // get logged-in agent profile
 export const getMyProfile = asyncHandler(

@@ -162,7 +162,7 @@ export default function TaskList({
               </span>
 
               <span className="text-gray-300 text-sm">
-                {typeof task.agent === "object"
+                {task.agent && typeof task.agent === "object"
                   ? task.agent.name
                   : "—"}
               </span>

@@ -24,12 +24,6 @@ export default function Login({ role }: LoginProps) {
     setShow(true);
   }, []);
 
-  useEffect(() => {
-    if (token) {
-      navigate(userRole === "admin" ? "/admin" : "/agent");
-    }
-  }, [token, userRole]);
-
   const handleLogin = async () => {
     setError("");
 
@@ -49,11 +43,13 @@ export default function Login({ role }: LoginProps) {
 
       authLogin(data.token, data.user.role);
 
-      navigate(
-        data.user.role === "admin" ? "/admin" : "/agent"
-      );
+      // ✅ navigate ONLY on success
+      navigate(data.user.role === "admin" ? "/admin" : "/agent");
+
     } catch (err: any) {
-      setError(typeof err === "string" ? err : "Invalid email or password");
+      setError(
+        err?.response?.data?.message || "Invalid email or password"
+      );
     } finally {
       setLoading(false);
     }
@@ -85,13 +81,8 @@ export default function Login({ role }: LoginProps) {
         )}
 
         {/* FORM */}
-        <form
-          className="flex flex-col gap-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleLogin();
-          }}
-        >
+        <div className="flex flex-col gap-4">
+
           <input
             placeholder="Email"
             value={email}
@@ -116,7 +107,8 @@ export default function Login({ role }: LoginProps) {
           />
 
           <button
-            type="submit"
+            type="button"
+            onClick={handleLogin}
             disabled={loading || !email || !password}
             className={`h-11 rounded-lg font-semibold transition-all duration-300 
             ${
@@ -127,7 +119,8 @@ export default function Login({ role }: LoginProps) {
           >
             {loading ? "Logging in..." : "Login"}
           </button>
-        </form>
+
+        </div>
       </div>
     </div>
   );
