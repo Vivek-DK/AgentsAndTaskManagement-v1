@@ -107,6 +107,7 @@ export const deactivateAgent = asyncHandler(
 
     // 🔥 DELETE AGENT FIRST
     await Agent.findByIdAndDelete(id);
+    await User.findByIdAndDelete(id);
 
     // 🔥 REDISTRIBUTE ALL TASKS (NOT JUST ONE AGENT)
     await redistributeAllTasks();
