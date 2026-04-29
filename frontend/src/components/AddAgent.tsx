@@ -133,6 +133,7 @@ export default function AddAgent() {
               className="peer w-full h-12 px-4 rounded-lg bg-white/5 
               border border-white/10 text-sm outline-none 
               focus:ring-2 focus:ring-indigo-500 transition"
+              autoComplete="off"
             />
             <label className="
               absolute left-3 px-1 bg-dark
@@ -157,6 +158,7 @@ export default function AddAgent() {
               className="peer w-full h-12 px-4 rounded-lg bg-white/5 
               border border-white/10 text-sm outline-none 
               focus:ring-2 focus:ring-indigo-500 transition"
+              autoComplete="off"
             />
              <label className="
               absolute left-3 px-1 bg-dark
@@ -182,6 +184,7 @@ export default function AddAgent() {
               className="peer w-full h-12 px-4 rounded-lg bg-white/5 
               border border-white/10 text-sm outline-none 
               focus:ring-2 focus:ring-indigo-500 transition"
+              autoComplete="off"
             />
              <label className="
               absolute left-3 px-1 bg-dark
@@ -215,6 +218,7 @@ export default function AddAgent() {
             className="peer w-full h-12 px-4 rounded-lg bg-white/5 
             border border-white/10 text-sm outline-none 
             focus:ring-2 focus:ring-indigo-500 transition"
+            autoComplete="off"
           />
            <label className="
               absolute left-3 px-1 bg-dark

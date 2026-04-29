@@ -69,6 +69,7 @@ export default function DeleteAdmin() {
           className="peer w-full h-12 px-4 rounded-lg bg-white/5 
           border border-white/10 text-sm outline-none 
           focus:ring-2 focus:ring-red-500 transition"
+          autoComplete="off"
         />
        <label
           className={`absolute left-3 bg-dark px-1 text-gray-400 text-sm transition-all
@@ -95,6 +96,7 @@ export default function DeleteAdmin() {
           className="peer w-full h-12 px-4 rounded-lg bg-white/5 
           border border-white/10 text-sm outline-none 
           focus:ring-2 focus:ring-red-500 transition"
+          autoComplete="off"
         />
         <label
           className={`absolute left-3 bg-dark px-1 text-gray-400 text-sm transition-all

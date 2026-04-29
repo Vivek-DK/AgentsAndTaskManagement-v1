@@ -136,6 +136,7 @@ export default function AddAdmin() {
             border border-white/10 outline-none text-sm 
             focus:ring-2 focus:ring-indigo-500 transition"
             placeholder=" "
+            autoComplete="off"
           />
           <label className="
               absolute left-3 px-1 bg-dark
@@ -161,6 +162,7 @@ export default function AddAdmin() {
             border border-white/10 outline-none text-sm 
             focus:ring-2 focus:ring-indigo-500 transition"
             placeholder=" "
+            autoComplete="off"
           />
           <label className="
               absolute left-3 px-1 bg-dark
