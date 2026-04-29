@@ -138,16 +138,15 @@ export default function AddAdmin() {
             placeholder=" "
             autoComplete="off"
           />
-          <label className="
-              absolute left-3 px-1 bg-dark
-              text-black-400 text-sm transition-all
-
-              top-3
-              peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
-
-              peer-[&:not(:placeholder-shown)]:-top-2
-              peer-[&:not(:placeholder-shown)]:text-xs
-            ">
+          <label
+            className={`absolute left-3 px-1 bg-dark text-gray-400 text-sm transition-all
+            ${
+              form.email
+                ? "-top-2 text-xs text-indigo-400"
+                : "top-3"
+            }
+            peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400`}
+          >
             Email
           </label>
         </div>
@@ -164,16 +163,19 @@ export default function AddAdmin() {
             placeholder=" "
             autoComplete="off"
           />
-          <label className="
+          <label className={`
               absolute left-3 px-1 bg-dark
               text-black-400 text-sm transition-all
 
-              top-3
-              peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
+               ${
+                  form.mobile
+                    ? "-top-2 text-xs text-indigo-400"
+                    : "top-3"
+                }
 
               peer-[&:not(:placeholder-shown)]:-top-2
               peer-[&:not(:placeholder-shown)]:text-xs
-            ">
+            `}>
             Mobile Number
           </label>
         </div>
@@ -190,16 +192,19 @@ export default function AddAdmin() {
             focus:ring-2 focus:ring-indigo-500 transition"
             placeholder=" "
           />
-          <label className="
+          <label className={`
               absolute left-3 px-1 bg-dark
               text-black-400 text-sm transition-all
 
-              top-3
-              peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
+               ${
+                  form.password
+                    ? "-top-2 text-xs text-indigo-400"
+                    : "top-3"
+                }
 
               peer-[&:not(:placeholder-shown)]:-top-2
               peer-[&:not(:placeholder-shown)]:text-xs
-            ">
+            `}>
             Password
           </label>
         </div>
