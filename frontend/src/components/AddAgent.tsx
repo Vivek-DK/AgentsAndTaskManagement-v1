@@ -145,8 +145,7 @@ export default function AddAgent() {
                     : "top-3"
                 }
 
-              peer-[&:not(:placeholder-shown)]:-top-2
-              peer-[&:not(:placeholder-shown)]:text-xs
+              peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
             `}>
               Name
             </label>
@@ -173,8 +172,7 @@ export default function AddAgent() {
                     : "top-3"
                 }
 
-              peer-[&:not(:placeholder-shown)]:-top-2
-              peer-[&:not(:placeholder-shown)]:text-xs
+              peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
             `}>
               Email
             </label>
@@ -202,8 +200,7 @@ export default function AddAgent() {
                     : "top-3"
                 }
 
-              peer-[&:not(:placeholder-shown)]:-top-2
-              peer-[&:not(:placeholder-shown)]:text-xs
+              peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
             `}>
               Mobile
             </label>
@@ -239,8 +236,7 @@ export default function AddAgent() {
                     : "top-3"
                 }
 
-              peer-[&:not(:placeholder-shown)]:-top-2
-              peer-[&:not(:placeholder-shown)]:text-xs
+              peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
             `}>
             Password
           </label>
