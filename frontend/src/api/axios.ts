@@ -2,7 +2,7 @@ import axios from "axios";
 import { AxiosRequestConfig } from "axios";
 
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: "https://agentsandtaskmanagement-v1.onrender.com/api",
 });
 
 // ---------------- REQUEST ----------------

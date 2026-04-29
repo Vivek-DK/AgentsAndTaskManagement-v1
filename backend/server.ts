@@ -27,6 +27,7 @@ app.use(
     origin: [
       "https://agents-and-task-management.vercel.app",
       "http://localhost:5173",
+      "http://localhost:5174"
     ],
     credentials: true,
   })
