@@ -11,7 +11,7 @@ type LoginProps = {
 
 export default function Login({ role }: LoginProps) {
   const navigate = useNavigate();
-  const { login: authLogin, token, role: userRole } = useAuth();
+  const { login: authLogin } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +27,10 @@ export default function Login({ role }: LoginProps) {
   const handleLogin = async () => {
     setError("");
 
-    if (!email || !password) {
+    // ✅ normalize ONLY here
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!cleanEmail || !password) {
       setError("Please enter email and password");
       return;
     }
@@ -36,20 +39,16 @@ export default function Login({ role }: LoginProps) {
       setLoading(true);
 
       const data = await loginUser({
-        email,
+        email: cleanEmail,
         password,
         loginAs: role,
       });
 
       authLogin(data.token, data.user.role);
 
-      // ✅ navigate ONLY on success
       navigate(data.user.role === "admin" ? "/admin" : "/agent");
-
     } catch (err: any) {
-      setError(
-        err?.response?.data?.message || "Invalid email or password"
-      );
+      setError(err || "Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -57,8 +56,8 @@ export default function Login({ role }: LoginProps) {
 
   return (
     <div className="min-h-screen bg-dark flex items-center justify-center relative overflow-hidden px-4">
-
-      {/* BACKGROUND BLOBS */}
+      
+      {/* BACKGROUND */}
       <div className="absolute w-72 h-72 bg-indigo-500/30 blur-[120px] rounded-full top-10 left-10 animate-pulse"></div>
       <div className="absolute w-72 h-72 bg-purple-500/30 blur-[120px] rounded-full bottom-10 right-10 animate-pulse"></div>
 
@@ -84,10 +83,12 @@ export default function Login({ role }: LoginProps) {
         <div className="flex flex-col gap-4">
 
           <input
+            type="email"
+            autoComplete="off"
             placeholder="Email"
             value={email}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value.trim().toLowerCase())
+              setEmail(e.target.value) // ✅ NO transform here
             }
             className="h-11 px-4 rounded-lg bg-white/5 border border-white/10 
             focus:outline-none focus:ring-2 focus:ring-indigo-500 
@@ -96,6 +97,7 @@ export default function Login({ role }: LoginProps) {
 
           <input
             type="password"
+            autoComplete="new-password"
             placeholder="Password"
             value={password}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
