@@ -188,24 +188,24 @@ FirstName, Phone, Notes
 
 ### Auth
 
-POST /api/auth/login
+- POST /api/auth/login
 
 ### Agents
 
-GET /api/agents
-POST /api/agents
-DELETE /api/agents/:id
+- GET /api/agents  
+- POST /api/agents  
+- DELETE /api/agents/:id  
 
 ### Tasks
 
-GET /api/tasks/my-tasks
-GET /api/upload/tasks
-DELETE /api/tasks/:id
-DELETE /api/tasks
+- GET /api/tasks/my-tasks  
+- GET /api/upload/tasks  
+- DELETE /api/tasks/:id  
+- DELETE /api/tasks  
 
 ### Upload
 
-POST /api/upload
+- POST /api/upload
 
 ---
 
@@ -236,11 +236,11 @@ POST /api/upload
 
 ---
 ### Admin Dashboard
-![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement-v1/blob/95e0df4b0e26cc387d45b054645e9b8c97cb3969/project_images/Admin-dashboard.png)
+![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement-v1/blob/8432dc8ef2d914fbfc11e1aa34550fb3badd6431/project_images/admin-dashboard.png)
 
 ---
 ### Agent Dashboard
-![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement-v1/blob/95e0df4b0e26cc387d45b054645e9b8c97cb3969/project_images/Agent-dashboard.png)
+![image alt](https://github.com/Vivek-DK/AgentsAndTaskManagement-v1/blob/8432dc8ef2d914fbfc11e1aa34550fb3badd6431/project_images/Agent-dashboard.png)
 
 
 ---
