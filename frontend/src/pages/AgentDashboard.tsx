@@ -11,34 +11,45 @@ export default function AgentDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const [animateOut, setAnimateOut] = useState(false);
+
   const fetchData = async () => {
     setError("");
-    setLoading(true);
 
-    try {
-      const [agentRes, taskRes] = await Promise.allSettled([
-        getMyProfile(),
-        getMyTasks(),
-      ]);
+    // 🔥 animate out first
+    setAnimateOut(true);
 
-      if (agentRes.status === "fulfilled") {
-        setAgent(agentRes.value);
-      } else {
-        setError("Failed to load profile");
+    setTimeout(async () => {
+      setLoading(true);
+
+      try {
+        const [agentRes, taskRes] = await Promise.allSettled([
+          getMyProfile(),
+          getMyTasks(),
+        ]);
+
+        if (agentRes.status === "fulfilled") {
+          setAgent(agentRes.value);
+        } else {
+          setError("Failed to load profile");
+        }
+
+        if (taskRes.status === "fulfilled") {
+          setTasks(taskRes.value);
+        } else {
+          setError((prev) =>
+            prev ? prev + " & tasks failed" : "Failed to load tasks"
+          );
+        }
+      } catch {
+        setError("Something went wrong");
+      } finally {
+        setLoading(false);
+
+        // 🔥 animate in
+        setTimeout(() => setAnimateOut(false), 50);
       }
-
-      if (taskRes.status === "fulfilled") {
-        setTasks(taskRes.value);
-      } else {
-        setError((prev) =>
-          prev ? prev + " & tasks failed" : "Failed to load tasks"
-        );
-      }
-    } catch {
-      setError("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
+    }, 200); // match animation duration
   };
 
   useEffect(() => {
@@ -60,11 +71,11 @@ export default function AgentDashboard() {
 
       {/* ERROR */}
       {error && (
-        <div className="mb-5 p-4 rounded-xl bg-red-500/10 border border-red-400/30 text-red-300 flex justify-between items-center">
+        <div className="mb-5 p-4 rounded-xl bg-red-500/10 border border-red-400/30 text-red-300 flex justify-between items-center animate-fade-in">
           <span>{error}</span>
           <button
             onClick={fetchData}
-            className="px-3 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/30 transition"
+            className="px-3 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/30 cursor-pointer transition active:scale-95"
           >
             Retry
           </button>
@@ -72,12 +83,15 @@ export default function AgentDashboard() {
       )}
 
       {/* TOP CARDS */}
-      <div className="grid md:grid-cols-3 gap-6 mb-8">
-
-        {/* PROFILE CARD */}
+      <div
+        className={`grid md:grid-cols-3 gap-6 mb-8 transition-all duration-300 ${
+          animateOut ? "opacity-0 scale-95" : "opacity-100 scale-100"
+        }`}
+      >
+        {/* PROFILE */}
         <div className="md:col-span-2 p-6 rounded-2xl 
           bg-white/5 backdrop-blur-xl border border-white/10 shadow-lg 
-          flex items-center gap-5">
+          flex items-center gap-5 transition-all duration-300">
 
           <div className="w-14 h-14 rounded-full flex items-center justify-center 
             bg-gradient-to-r from-indigo-500 to-purple-500 font-bold text-lg">
@@ -97,11 +111,11 @@ export default function AgentDashboard() {
           </div>
         </div>
 
-        {/* STATS CARD */}
+        {/* STATS */}
         <div className="p-6 rounded-2xl 
           bg-gradient-to-r from-indigo-500/20 to-purple-500/20 
           border border-white/10 backdrop-blur-xl shadow-lg 
-          flex flex-col justify-center items-center">
+          flex flex-col justify-center items-center transition-all duration-300">
 
           <p className="text-sm text-gray-300 mb-1">
             Total Tasks
@@ -111,28 +125,31 @@ export default function AgentDashboard() {
             {tasks.length}
           </span>
         </div>
-
       </div>
 
       {/* TASK SECTION */}
-      <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-lg">
-
+      <div
+        className={`p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-lg transition-all duration-300 ${
+          animateOut ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
+        }`}
+      >
         <h3 className="text-lg font-semibold mb-5">
           Assigned Tasks
         </h3>
 
         {loading ? (
-          <p className="text-gray-400">Loading tasks...</p>
+          <p className="text-gray-400 animate-pulse">
+            Loading tasks...
+          </p>
         ) : tasks.length === 0 ? (
           <p className="text-gray-400">No tasks assigned</p>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-
             {tasks.map((task) => (
               <div
                 key={task._id}
                 className="p-5 rounded-xl bg-white/5 border border-white/10 
-                hover:bg-white/10 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]"
+                hover:bg-white/10 transition-all duration-300 hover:shadow-lg hover:scale-[1.03]"
               >
                 <div className="flex justify-between items-center mb-2">
                   <strong className="text-sm">
@@ -148,10 +165,8 @@ export default function AgentDashboard() {
                 </p>
               </div>
             ))}
-
           </div>
         )}
-
       </div>
     </div>
   );

@@ -87,7 +87,7 @@ export const getMyProfile = asyncHandler(
   }
 );
 
-// deactivate agent + redistribute tasks
+// deactivate agent + redistribute tasks + DELETE
 export const deactivateAgent = asyncHandler(
   async (req: Request, res: Response) => {
     const id = req.params.id as string;
@@ -102,33 +102,38 @@ export const deactivateAgent = asyncHandler(
       throw new AppError("Agent not found", 404);
     }
 
-    // deactivate
-    agent.isActive = false;
-    await agent.save();
-
+    // 🔥 get tasks assigned to this agent
     const tasks = await Task.find({ agent: id });
 
+    // 🔥 reassign tasks BEFORE deleting
     if (tasks.length > 0) {
       const activeAgents = await Agent.find({
         isActive: true,
         _id: { $ne: new mongoose.Types.ObjectId(id) },
       });
 
-      if (activeAgents.length) {
-        const redistributed = distributeTasks(tasks, activeAgents);
-
-        // 🔥 optimize: Promise.all instead of loop await
-        await Promise.all(
-          tasks.map((task, i) => {
-            task.agent = redistributed[i].agent;
-            return task.save();
-          })
+      if (activeAgents.length === 0) {
+        throw new AppError(
+          "No active agents available to reassign tasks",
+          400
         );
       }
+
+      const redistributed = distributeTasks(tasks, activeAgents);
+
+      await Promise.all(
+        tasks.map((task, i) => {
+          task.agent = redistributed[i].agent;
+          return task.save();
+        })
+      );
     }
 
+    // 🔥 NOW DELETE AGENT (hard delete)
+    await Agent.findByIdAndDelete(id);
+
     res.json({
-      message: "Agent deactivated and tasks reassigned",
+      message: "Agent deleted and tasks reassigned",
     });
   }
 );

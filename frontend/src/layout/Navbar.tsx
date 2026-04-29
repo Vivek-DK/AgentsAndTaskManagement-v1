@@ -9,8 +9,8 @@ export default function Navbar() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const getDashboardRoute = () => {
-    if (role === "admin") return "/admin-dashboard";
-    if (role === "agent") return "/agent-dashboard";
+    if (role === "admin") return "/admin";
+    if (role === "agent") return "/agent";
     return "/";
   };
 

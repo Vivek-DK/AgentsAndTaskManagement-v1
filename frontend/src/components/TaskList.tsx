@@ -9,7 +9,7 @@ type Props = {
   tasks_prop: Task[];
   setTasks_prop: React.Dispatch<React.SetStateAction<Task[]>>;
   onRefresh: () => void;
-  refreshing: boolean; // ✅ added
+  refreshing: boolean;
 };
 
 export default function TaskList({
@@ -18,36 +18,53 @@ export default function TaskList({
   onRefresh,
   refreshing,
 }: Props) {
-
   const [search, setSearch] = useState("");
   const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
-  // DELETE SINGLE
+  const [deleting, setDeleting] = useState(false);
+  const [deletingAll, setDeletingAll] = useState(false);
+
+  // 🔥 DELETE SINGLE
   const deleteTask = async () => {
     if (!taskToDelete) return;
 
     try {
+      setDeleting(true);
+
       await deleteTaskById(taskToDelete);
 
+      // smooth remove
       setTasks_prop((prev) =>
         prev.filter((t) => t._id !== taskToDelete)
       );
 
-      setTaskToDelete(null);
+      setTimeout(() => {
+        setTaskToDelete(null);
+      }, 200);
     } catch {
       alert("Delete failed");
+    } finally {
+      setDeleting(false); // ✅ FIXED
     }
   };
 
-  // DELETE ALL
+  // 🔥 DELETE ALL
   const deleteAllTasks = async () => {
     try {
+      setDeletingAll(true);
+
       await deleteAllTasksApi();
+
       setTasks_prop([]);
-      setShowDeleteAllConfirm(false);
+
+      setTimeout(() => {
+        setShowDeleteAllConfirm(false);
+      }, 200);
     } catch {
       alert("Delete failed");
+    } finally {
+      setDeletingAll(false);
     }
   };
 
@@ -66,13 +83,11 @@ export default function TaskList({
 
   return (
     <div className="w-full">
-
-      {/* TOP BAR */}
+      {/* TOP */}
       <div className="flex justify-between items-center mb-5">
         <h3 className="text-lg font-semibold">Tasks</h3>
 
         <div className="flex gap-2 items-center">
-
           {/* SEARCH */}
           <input
             placeholder="Search..."
@@ -81,13 +96,13 @@ export default function TaskList({
             className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
-          {/* REFRESH BUTTON (FIXED) */}
+          {/* REFRESH */}
           <button
             onClick={onRefresh}
-            className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 flex items-center gap-2 active:scale-95 transition"
+            className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 cursor-pointer flex items-center gap-2 active:scale-95 transition"
           >
             <span
-              className={`inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full ${
+              className={`w-4 h-4 border-2 border-white border-t-transparent rounded-full ${
                 refreshing ? "animate-spin" : ""
               }`}
             />
@@ -98,125 +113,115 @@ export default function TaskList({
           {tasks_prop.length > 0 && (
             <button
               onClick={() => setShowDeleteAllConfirm(true)}
-              className="px-4 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition"
+              disabled={deletingAll}
+              className={`px-4 py-2 rounded-lg flex items-center gap-2 justify-center cursor-pointer
+                backdrop-blur-md border border-red-400/20
+                ${
+                  deletingAll
+                    ? "bg-red-500/20 text-red-300 cursor-not-allowed"
+                    : "bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:scale-105 active:scale-95 transition"
+                }`}
             >
-              Delete All
+              {deletingAll ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete All"
+              )}
             </button>
           )}
-
         </div>
       </div>
 
-      {/* EMPTY STATE */}
-      {tasks_prop.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
-          No tasks available
+      {/* TABLE */}
+      <div className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+        <div className="grid grid-cols-[1fr_1fr_3fr_1.5fr_120px] px-6 py-4 text-xs text-gray-400 border-b border-white/10">
+          <span>Name</span>
+          <span>Phone</span>
+          <span>Notes</span>
+          <span>Agent</span>
+          <span className="text-right">Action</span>
         </div>
-      ) : filteredTasks.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
-          No matching tasks found
-        </div>
-      ) : (
 
-        /* TABLE */
-        <div className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+        <div className="max-h-[420px] overflow-y-auto">
+          {filteredTasks.map((task) => (
+            <div
+              key={task._id}
+              className="grid grid-cols-[1fr_1fr_3fr_1.5fr_120px] px-6 py-4 border-b border-white/5 hover:bg-white/5 transition"
+            >
+              <span className="font-medium">{task.FirstName}</span>
 
-          {/* HEADER */}
-          <div className="grid grid-cols-[1fr_1fr_3fr_1.5fr_100px] px-6 py-4 text-xs text-gray-400 border-b border-white/10">
-            <span>Name</span>
-            <span>Phone</span>
-            <span>Notes</span>
-            <span>Agent</span>
-            <span className="text-right">Action</span>
-          </div>
+              <span className="text-gray-400 text-sm">
+                {task.Phone}
+              </span>
 
-          {/* BODY */}
-          <div className="max-h-[420px] overflow-y-auto">
+              <span className="text-gray-400 text-sm pr-4">
+                {task.Notes || "-"}
+              </span>
 
-            {filteredTasks.map((task) => (
-              <div
-                key={task._id}
-                className="grid grid-cols-[1fr_1fr_3fr_1.5fr_100px] px-6 py-4 border-b border-white/5 hover:bg-white/5 transition"
-              >
-                <span className="font-medium">
-                  {task.FirstName}
-                </span>
+              <span className="text-gray-300 text-sm">
+                {typeof task.agent === "object"
+                  ? task.agent.name
+                  : "—"}
+              </span>
 
-                <span className="text-gray-400 text-sm">
-                  {task.Phone}
-                </span>
-
-                <span className="text-gray-400 text-sm break-words pr-4">
-                  {task.Notes || "-"}
-                </span>
-
-                <span className="text-gray-300 text-sm">
-                  {typeof task.agent === "object"
-                    ? task.agent.name
-                    : "—"}
-                </span>
-
-                <div className="flex justify-end">
-                  <button
-                    onClick={() => setTaskToDelete(task._id)}
-                    className="text-red-400 hover:text-red-300 transition"
-                  >
-                    Delete
-                  </button>
-                </div>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setTaskToDelete(task._id)}
+                  className="px-3 py-1 rounded-lg text-sm cursor-pointer
+                  bg-red-500/10 text-red-400
+                  hover:bg-red-500/20 hover:scale-105
+                  active:scale-95 transition backdrop-blur-md"
+                >
+                  Delete
+                </button>
               </div>
-            ))}
-
-          </div>
+            </div>
+          ))}
         </div>
-      )}
+      </div>
 
-      {/* DELETE ALL MODAL */}
-      {showDeleteAllConfirm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center">
-          <div className="bg-white/10 p-6 rounded-xl text-center">
-            <p className="mb-4">Delete all tasks?</p>
+      {/* MODAL */}
+      {(showDeleteAllConfirm || taskToDelete) && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center">
+          <div className="bg-white/10 backdrop-blur-xl p-6 rounded-xl text-center border border-white/10 shadow-lg animate-[fadeIn_0.2s_ease]">
+            <p className="mb-4">
+              {taskToDelete
+                ? "Delete this task?"
+                : "Delete all tasks?"}
+            </p>
+
             <div className="flex gap-3 justify-center">
               <button
-                onClick={() => setShowDeleteAllConfirm(false)}
-                className="px-4 py-2 bg-white/10 rounded"
+                onClick={() => {
+                  setTaskToDelete(null);
+                  setShowDeleteAllConfirm(false);
+                }}
+                className="px-4 py-2 bg-white/10 hover:bg-white/20 cursor-pointer rounded-lg transition"
               >
                 Cancel
               </button>
+
               <button
-                onClick={deleteAllTasks}
-                className="px-4 py-2 bg-red-500 rounded"
+                onClick={
+                  taskToDelete ? deleteTask : deleteAllTasks
+                }
+                disabled={deleting || deletingAll}
+                className="px-4 py-2 rounded-lg cursor-pointer flex items-center gap-2
+                bg-red-500/20 text-red-400 hover:bg-red-500/30
+                active:scale-95 transition"
               >
+                {(deleting || deletingAll) && (
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                )}
                 Confirm
               </button>
             </div>
           </div>
         </div>
       )}
-
-      {/* SINGLE DELETE MODAL */}
-      {taskToDelete && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center">
-          <div className="bg-white/10 p-6 rounded-xl text-center">
-            <p className="mb-4">Delete this task?</p>
-            <div className="flex gap-3 justify-center">
-              <button
-                onClick={() => setTaskToDelete(null)}
-                className="px-4 py-2 bg-white/10 rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={deleteTask}
-                className="px-4 py-2 bg-red-500 rounded"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }

@@ -26,6 +26,7 @@ export default function Agents({
   const [agentTasks, setAgentTasks] = useState<Record<string, Task[]>>({});
   const [taskLoading, setTaskLoading] = useState<Record<string, boolean>>({});
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false); // ✅ NEW
 
   // EXPAND
   const toggleAgent = async (id: string) => {
@@ -48,21 +49,31 @@ export default function Agents({
 
   // DELETE
   const deactivateAgent = async () => {
-    if (!confirmDelete) return;
+    if (!confirmDelete || deleting) return;
 
-    await deactivateAgentApi(confirmDelete);
+    try {
+      setDeleting(true);
 
-    setAgents((prev) =>
-      prev.filter((a) => a._id !== confirmDelete)
-    );
+      await deactivateAgentApi(confirmDelete);
 
-    setConfirmDelete(null);
+      setAgents((prev) =>
+        prev.filter((a) => a._id !== confirmDelete)
+      );
+
+      setConfirmDelete(null);
+    } catch {
+      alert("Failed to deactivate agent");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   // ESC close
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setConfirmDelete(null);
+      if (e.key === "Escape" && !deleting) {
+        setConfirmDelete(null);
+      }
     };
 
     if (confirmDelete) {
@@ -72,7 +83,7 @@ export default function Agents({
     return () => {
       window.removeEventListener("keydown", handleEsc);
     };
-  }, [confirmDelete]);
+  }, [confirmDelete, deleting]);
 
   return (
     <div className="w-full">
@@ -107,7 +118,6 @@ export default function Agents({
                 key={agent._id}
                 className="rounded-xl bg-white/5 border border-white/10 overflow-hidden"
               >
-                {/* ROW */}
                 <div
                   className="flex items-center justify-between px-5 py-4 hover:bg-white/5 transition cursor-pointer"
                   onClick={() => toggleAgent(agent._id)}
@@ -148,7 +158,6 @@ export default function Agents({
                       <p className="text-gray-400">Loading tasks...</p>
                     ) : agentTasks[agent._id]?.length > 0 ? (
                       <div className="space-y-2 max-h-40 overflow-y-auto">
-
                         {agentTasks[agent._id].map((task) => (
                           <div
                             key={task._id}
@@ -165,7 +174,6 @@ export default function Agents({
                             </p>
                           </div>
                         ))}
-
                       </div>
                     ) : (
                       <p className="text-gray-400">No tasks assigned</p>
@@ -179,28 +187,38 @@ export default function Agents({
         </div>
       )}
 
-      {/* ✅ SINGLE MODAL (OUTSIDE MAP) */}
+      {/* MODAL */}
       {confirmDelete && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center z-50">
           <div className="bg-white/10 p-6 rounded-xl text-center border border-white/10 shadow-xl">
+
             <p className="mb-4 text-sm text-gray-300">
               Are you sure you want to deactivate this agent?
             </p>
 
             <div className="flex gap-3 justify-center">
+
+              {/* CANCEL */}
               <button
                 onClick={() => setConfirmDelete(null)}
-                className="px-4 py-2 bg-white/10 rounded hover:bg-white/20 transition"
+                disabled={deleting}
+                className="px-4 py-2 bg-white/10 rounded hover:bg-white/20 transition disabled:opacity-50"
               >
                 Cancel
               </button>
 
+              {/* CONFIRM */}
               <button
                 onClick={deactivateAgent}
-                className="px-4 py-2 bg-red-500 rounded hover:bg-red-600 transition"
+                disabled={deleting}
+                className="px-4 py-2 bg-red-500 rounded hover:bg-red-600 transition flex items-center gap-2 disabled:opacity-50"
               >
-                Deactivate
+                {deleting && (
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                )}
+                {deleting ? "Deactivating..." : "Deactivate"}
               </button>
+
             </div>
           </div>
         </div>
