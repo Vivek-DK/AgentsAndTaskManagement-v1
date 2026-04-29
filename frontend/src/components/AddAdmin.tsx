@@ -137,12 +137,16 @@ export default function AddAdmin() {
             focus:ring-2 focus:ring-indigo-500 transition"
             placeholder=" "
           />
-          <label
-            className="absolute left-3 top-3 text-gray-400 text-sm 
-            transition-all peer-focus:-top-2 peer-focus:text-xs 
-            peer-focus:text-indigo-400 peer-placeholder-shown:top-3 
-            peer-placeholder-shown:text-sm bg-dark px-1"
-          >
+          <label className="
+              absolute left-3 px-1 bg-dark
+              text-black-400 text-sm transition-all
+
+              top-3
+              peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
+
+              peer-[&:not(:placeholder-shown)]:-top-2
+              peer-[&:not(:placeholder-shown)]:text-xs
+            ">
             Email
           </label>
         </div>
@@ -158,12 +162,16 @@ export default function AddAdmin() {
             focus:ring-2 focus:ring-indigo-500 transition"
             placeholder=" "
           />
-          <label
-            className="absolute left-3 top-3 text-gray-400 text-sm 
-            transition-all peer-focus:-top-2 peer-focus:text-xs 
-            peer-focus:text-indigo-400 peer-placeholder-shown:top-3 
-            peer-placeholder-shown:text-sm bg-dark px-1"
-          >
+          <label className="
+              absolute left-3 px-1 bg-dark
+              text-black-400 text-sm transition-all
+
+              top-3
+              peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
+
+              peer-[&:not(:placeholder-shown)]:-top-2
+              peer-[&:not(:placeholder-shown)]:text-xs
+            ">
             Mobile Number
           </label>
         </div>
@@ -180,12 +188,16 @@ export default function AddAdmin() {
             focus:ring-2 focus:ring-indigo-500 transition"
             placeholder=" "
           />
-          <label
-            className="absolute left-3 top-3 text-gray-400 text-sm 
-            transition-all peer-focus:-top-2 peer-focus:text-xs 
-            peer-focus:text-indigo-400 peer-placeholder-shown:top-3 
-            peer-placeholder-shown:text-sm bg-dark px-1"
-          >
+          <label className="
+              absolute left-3 px-1 bg-dark
+              text-black-400 text-sm transition-all
+
+              top-3
+              peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
+
+              peer-[&:not(:placeholder-shown)]:-top-2
+              peer-[&:not(:placeholder-shown)]:text-xs
+            ">
             Password
           </label>
         </div>

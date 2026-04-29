@@ -136,7 +136,7 @@ export default function AddAgent() {
             />
             <label className="
               absolute left-3 px-1 bg-dark
-              text-gray-400 text-sm transition-all
+              text-black-400 text-sm transition-all
 
               top-3
               peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
@@ -160,7 +160,7 @@ export default function AddAgent() {
             />
              <label className="
               absolute left-3 px-1 bg-dark
-              text-gray-400 text-sm transition-all
+              text-black-400 text-sm transition-all
 
               top-3
               peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
@@ -185,7 +185,7 @@ export default function AddAgent() {
             />
              <label className="
               absolute left-3 px-1 bg-dark
-              text-gray-400 text-sm transition-all
+              text-black-400 text-sm transition-all
 
               top-3
               peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
@@ -218,7 +218,7 @@ export default function AddAgent() {
           />
            <label className="
               absolute left-3 px-1 bg-dark
-              text-gray-400 text-sm transition-all
+              text-black-400 text-sm transition-all
 
               top-3
               peer-focus:-top-2 peer-focus:text-xs peer-focus:text-indigo-400
