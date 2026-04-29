@@ -130,10 +130,12 @@ project-root/
 ```
 NODE_ENV=production
 PORT=5000
+
 MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-ADMIN_EMAIL=superadmin@gmail.com
-ADMIN_PASSWORD=Admin@123
+JWT_SECRET=your_jwt_secret
+
+ADMIN_EMAIL=your_admin_email
+ADMIN_PASSWORD=your_admin_password
 ```
 
 ---
