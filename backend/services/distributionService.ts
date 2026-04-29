@@ -26,7 +26,6 @@ const distributeTasks = (
   const result: DistributedTask[] = [];
   let taskIndex = 0;
 
-  // equal distribution
   for (let i = 0; i < totalAgents; i++) {
     for (let j = 0; j < baseTasks; j++) {
       result.push({
@@ -37,7 +36,6 @@ const distributeTasks = (
     }
   }
 
-  // remaining tasks
   for (let i = 0; i < remainingTasks; i++) {
     result.push({
       ...tasks[taskIndex],

@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { Agent } from "../models/Agent";
 import { User } from "../models/User";
 import { Task } from "../models/Task";
-import distributeTasks from "../services/distributionService";
+import { redistributeAllTasks } from "../services/taskRedistribution.service";
 import { asyncHandler } from "../utils/asyncHandler";
 import { AppError } from "../utils/AppError";
 import mongoose from "mongoose";
@@ -41,6 +41,9 @@ export const addAgent = asyncHandler(async (req: Request, res: Response) => {
     mobile,
     password: hashedPassword,
   });
+
+  // 🔥 REDISTRIBUTE ALL TASKS
+  await redistributeAllTasks();
 
   res.status(201).json({
     message: "Agent created successfully",
@@ -102,38 +105,14 @@ export const deactivateAgent = asyncHandler(
       throw new AppError("Agent not found", 404);
     }
 
-    // 🔥 get tasks assigned to this agent
-    const tasks = await Task.find({ agent: id });
-
-    // 🔥 reassign tasks BEFORE deleting
-    if (tasks.length > 0) {
-      const activeAgents = await Agent.find({
-        isActive: true,
-        _id: { $ne: new mongoose.Types.ObjectId(id) },
-      });
-
-      if (activeAgents.length === 0) {
-        throw new AppError(
-          "No active agents available to reassign tasks",
-          400
-        );
-      }
-
-      const redistributed = distributeTasks(tasks, activeAgents);
-
-      await Promise.all(
-        tasks.map((task, i) => {
-          task.agent = redistributed[i].agent;
-          return task.save();
-        })
-      );
-    }
-
-    // 🔥 NOW DELETE AGENT (hard delete)
+    // 🔥 DELETE AGENT FIRST
     await Agent.findByIdAndDelete(id);
 
+    // 🔥 REDISTRIBUTE ALL TASKS (NOT JUST ONE AGENT)
+    await redistributeAllTasks();
+
     res.json({
-      message: "Agent deleted and tasks reassigned",
+      message: "Agent deleted and tasks redistributed",
     });
   }
 );
